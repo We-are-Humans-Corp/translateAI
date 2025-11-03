@@ -8,10 +8,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.20.9",
     "@auth/prisma-adapter": "^2.11.1",
     "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^6.18.0",
-    "anthropic": "^0.0.0",
     "bcryptjs": "^3.0.3",
     "jsonwebtoken": "^9.0.2",
     "litellm": "^0.12.0",

@@ -38,11 +38,18 @@ export async function POST(request: Request) {
           { status: 401 }
         );
       }
-      userId = session.user.id;
-      userTier = session.user.tier || 'free';
+      userId = (session.user as any).id;
+      userTier = (session.user as any).tier || 'free';
     }
 
     // Check monthly usage limit
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'User ID not found' },
+        { status: 401 }
+      );
+    }
+
     const monthlyUsage = await getMonthlyUsage(userId);
     const maxCost = MAX_MONTHLY_COST[userTier as keyof typeof MAX_MONTHLY_COST] || MAX_MONTHLY_COST.free;
 
@@ -159,8 +166,8 @@ export async function GET(request: Request) {
       userId = validatedKey.user.id;
       userTier = validatedKey.user.tier;
     } else if (session?.user) {
-      userId = session.user.id;
-      userTier = session.user.tier || 'free';
+      userId = (session.user as any).id;
+      userTier = (session.user as any).tier || 'free';
     }
 
     const models = litellm.getAvailableModels();
