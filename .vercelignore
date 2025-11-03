@@ -1,0 +1,12 @@
+# Ignore Python files from Translate Flow
+Translate Flow/
+*.py
+__pycache__/
+*.pyc
+
+# Ignore development files
+.env.local
+.env
+node_modules/
+.next/
+.git/
