@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String    // Hashed password
+  image         String?
+  tier          String    @default("free") // free, pro, enterprise
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  apiKeys       ApiKey[]
+  translations  Translation[]
+  usage         Usage[]
+  sessions      Session[]
+  accounts      Account[]
+}
+
+// NextAuth Account model
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// NextAuth Session model
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// API Key model for service access
+model ApiKey {
+  id          String    @id @default(cuid())
+  key         String    @unique @default(cuid())
+  name        String
+  userId      String
+  active      Boolean   @default(true)
+  lastUsed    DateTime?
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime  @default(dbgenerated("NOW() + INTERVAL '1 year'"))
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  usage       Usage[]
+}
+
+// Translation history
+model Translation {
+  id            String    @id @default(cuid())
+  userId        String
+  sourceText    String    @db.Text
+  targetText    String    @db.Text
+  sourceLang    String
+  targetLang    String
+  model         String
+  provider      String
+  style         String
+  tokensUsed    Int
+  cost          Float
+  responseTime  Int       // in milliseconds
+  createdAt     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Usage tracking for billing
+model Usage {
+  id            String    @id @default(cuid())
+  userId        String
+  apiKeyId      String?
+  model         String
+  provider      String
+  tokensUsed    Int
+  cost          Float
+  timestamp     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  apiKey        ApiKey?   @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
+
+  @@index([userId, timestamp])
+}
+
+// Rate limiting
+model RateLimit {
+  id            String    @id @default(cuid())
+  identifier    String    @unique // userId or IP address
+  requests      Int       @default(0)
+  window        DateTime  @default(now())
+
+  @@index([identifier, window])
+}
+
+// System configuration
+model SystemConfig {
+  id            String    @id @default(cuid())
+  key           String    @unique
+  value         String
+  description   String?
+  updatedAt     DateTime  @updatedAt
+}

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import './globals.css'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
@@ -19,10 +20,33 @@ export default function RootLayout({
           {/* Header with theme toggle */}
           <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  TranslateAI
-                </h1>
+              <div className="flex items-center gap-8">
+                <Link href="/" className="flex items-center gap-2">
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    TranslateAI
+                  </h1>
+                </Link>
+
+                <nav className="flex items-center gap-6">
+                  <Link
+                    href="/"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/translate"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    Translator
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                </nav>
               </div>
               <ThemeToggle />
             </div>

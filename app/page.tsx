@@ -48,10 +48,16 @@ export default function Home() {
         {/* CTA Buttons */}
         <div className="flex gap-4 justify-center mt-12">
           <a
-            href="/dashboard"
+            href="/translate"
             className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
           >
-            Get Started
+            Try Translator
+          </a>
+          <a
+            href="/dashboard"
+            className="px-8 py-3 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg font-semibold transition-colors"
+          >
+            Dashboard
           </a>
           <a
             href="https://github.com/We-are-Humans-Corp/translateAI"
