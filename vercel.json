@@ -3,30 +3,6 @@
   "buildCommand": "prisma generate && next build",
   "devCommand": "next dev",
   "installCommand": "npm install",
-  "regions": ["iad1", "sfo1", "fra1", "sin1"],
-  "functions": {
-    "app/api/translate/route.ts": {
-      "maxDuration": 30,
-      "memory": 1024
-    },
-    "app/api/translate/stream/route.ts": {
-      "maxDuration": 60,
-      "memory": 1024
-    },
-    "app/api/webhooks/stripe/route.ts": {
-      "maxDuration": 10
-    }
-  },
-  "crons": [
-    {
-      "path": "/api/cron/cleanup",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/cron/usage-report",
-      "schedule": "0 9 * * 1"
-    }
-  ],
   "headers": [
     {
       "source": "/api/(.*)",
