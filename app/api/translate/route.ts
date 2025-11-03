@@ -16,9 +16,29 @@ export async function POST(request: Request) {
 
     // Check if model is available
     const availableModels = litellm.getAvailableModels();
+    console.log('Available models:', availableModels);
+    console.log('Requested model:', model);
+    console.log('OpenAI key present:', !!process.env.OPENAI_API_KEY);
+
+    if (!model) {
+      return NextResponse.json(
+        { error: 'Model not specified. Available models: ' + availableModels.join(', ') },
+        { status: 400 }
+      );
+    }
+
     if (!availableModels.includes(model)) {
       return NextResponse.json(
-        { error: `Model ${model} is not available. Available models: ${availableModels.join(', ')}` },
+        {
+          error: `Model ${model} is not available. Available models: ${availableModels.join(', ')}`,
+          debug: {
+            requested: model,
+            available: availableModels,
+            hasOpenAI: !!process.env.OPENAI_API_KEY,
+            hasAnthropic: !!process.env.ANTHROPIC_API_KEY,
+            hasGoogle: !!process.env.GOOGLE_API_KEY
+          }
+        },
         { status: 400 }
       );
     }
