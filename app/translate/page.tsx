@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 
 export default function TranslatePage() {
@@ -8,7 +8,8 @@ export default function TranslatePage() {
   const [outputText, setOutputText] = useState('Translation will appear here...');
   const [sourceLang, setSourceLang] = useState('en');
   const [targetLang, setTargetLang] = useState('ru');
-  const [model, setModel] = useState('gpt-4o');
+  const [model, setModel] = useState('');
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [style, setStyle] = useState('academic');
   const [temperature, setTemperature] = useState(30);
   const [maxTokens, setMaxTokens] = useState(2000);
@@ -16,6 +17,28 @@ export default function TranslatePage() {
   const [preserveFormat, setPreserveFormat] = useState(true);
   const [improveGrammar, setImproveGrammar] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Load available models on component mount
+  useEffect(() => {
+    const loadModels = async () => {
+      try {
+        const response = await fetch('/api/translate');
+        const data = await response.json();
+        if (data.models && data.models.length > 0) {
+          setAvailableModels(data.models);
+          // Set default model to the first available one
+          setModel(data.models[0]);
+        } else {
+          console.error('No models available');
+          setOutputText('Error: No AI models available. Please check API configuration.');
+        }
+      } catch (error) {
+        console.error('Failed to load models:', error);
+        setOutputText('Error: Failed to load available models.');
+      }
+    };
+    loadModels();
+  }, []);
 
   const translateText = async () => {
     const text = inputText.trim();
@@ -180,15 +203,31 @@ export default function TranslatePage() {
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
+                disabled={availableModels.length === 0}
               >
-                <option value="gpt-4o">GPT-4o</option>
-                <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                <option value="claude-3-opus">Claude 3 Opus</option>
-                <option value="claude-3-sonnet">Claude 3 Sonnet</option>
-                <option value="gemini-pro">Gemini Pro</option>
-                <option value="llama-3">Llama 3 70B</option>
-                <option value="mistral-large">Mistral Large</option>
+                {availableModels.length === 0 ? (
+                  <option>Loading models...</option>
+                ) : (
+                  availableModels.map((modelKey) => {
+                    const modelNames: Record<string, string> = {
+                      'gpt-4o': 'GPT-4o',
+                      'gpt-4-turbo': 'GPT-4 Turbo',
+                      'gpt-3.5-turbo': 'GPT-3.5 Turbo',
+                      'claude-3-opus': 'Claude 3 Opus',
+                      'claude-3-sonnet': 'Claude 3 Sonnet',
+                      'claude-3-haiku': 'Claude 3 Haiku',
+                      'gemini-pro': 'Gemini Pro',
+                      'gemini-1.5-pro': 'Gemini 1.5 Pro',
+                      'llama-3': 'Llama 3 70B',
+                      'mistral-large': 'Mistral Large',
+                    };
+                    return (
+                      <option key={modelKey} value={modelKey}>
+                        {modelNames[modelKey] || modelKey}
+                      </option>
+                    );
+                  })
+                )}
               </select>
             </div>
 

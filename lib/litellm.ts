@@ -207,21 +207,28 @@ Style: ${styleInstructions[req.style as keyof typeof styleInstructions] || style
   getAvailableModels(): string[] {
     const available = [];
 
-    if (process.env.OPENAI_API_KEY) {
+    if (process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes('your-')) {
       available.push('gpt-4o', 'gpt-4-turbo', 'gpt-3.5-turbo');
     }
 
-    if (process.env.ANTHROPIC_API_KEY) {
+    if (process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_API_KEY.includes('your-')) {
       available.push('claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku');
     }
 
-    if (process.env.GOOGLE_API_KEY) {
+    if (process.env.GOOGLE_API_KEY && !process.env.GOOGLE_API_KEY.includes('your-')) {
       available.push('gemini-pro', 'gemini-1.5-pro');
     }
 
-    if (process.env.REPLICATE_API_KEY) {
+    if (process.env.REPLICATE_API_KEY && !process.env.REPLICATE_API_KEY.includes('your-')) {
       available.push('llama-3', 'mistral-large');
     }
+
+    console.log('Available models check:', {
+      hasOpenAI: !!process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes('your-'),
+      hasAnthropic: !!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_API_KEY.includes('your-'),
+      hasGoogle: !!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_API_KEY.includes('your-'),
+      models: available
+    });
 
     return available;
   }
