@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 // Model mapping for different providers
 export const MODEL_MAPPING = {
   // OpenAI models
-  'gpt-4o': 'gpt-4-1106-preview',
+  'gpt-4o': 'gpt-4',
   'gpt-4-turbo': 'gpt-4-turbo-preview',
   'gpt-3.5-turbo': 'gpt-3.5-turbo',
 
@@ -65,20 +65,23 @@ class LiteLLMService {
   constructor() {
     // Initialize OpenAI
     if (process.env.OPENAI_API_KEY) {
+      console.log('Initializing OpenAI with key:', process.env.OPENAI_API_KEY?.substring(0, 10) + '...');
       this.openai = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
       });
+    } else {
+      console.log('OpenAI API key not found in environment variables');
     }
 
     // Initialize Anthropic
-    if (process.env.ANTHROPIC_API_KEY) {
+    if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_API_KEY !== 'your-anthropic-api-key') {
       this.anthropic = new Anthropic({
         apiKey: process.env.ANTHROPIC_API_KEY,
       });
     }
 
     // Initialize Google
-    if (process.env.GOOGLE_API_KEY) {
+    if (process.env.GOOGLE_API_KEY && process.env.GOOGLE_API_KEY !== 'your-google-api-key') {
       this.google = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
     }
   }

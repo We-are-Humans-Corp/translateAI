@@ -75,10 +75,20 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error('Translation API error:', error);
+
+    // Provide more detailed error info for debugging
+    const errorMessage = error instanceof Error ? error.message : 'Translation service error';
+    const errorDetails = {
+      message: errorMessage,
+      availableModels: litellm.getAvailableModels(),
+      hasOpenAI: !!process.env.OPENAI_API_KEY,
+      openAIKeyStart: process.env.OPENAI_API_KEY?.substring(0, 10),
+    };
+
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : 'Translation service error',
-        details: process.env.NODE_ENV === 'development' ? String(error) : undefined
+        error: errorMessage,
+        details: errorDetails
       },
       { status: 500 }
     );
