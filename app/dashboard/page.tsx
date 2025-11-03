@@ -2,13 +2,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { 
-  Key, 
-  BarChart3, 
-  Settings, 
-  Copy, 
-  Trash2, 
+import {
+  Key,
+  BarChart3,
+  Settings,
+  Copy,
+  Trash2,
   Plus,
   Check,
   AlertCircle,
@@ -37,7 +36,6 @@ interface UsageStats {
 }
 
 export default function Dashboard() {
-  const { data: session } = useSession();
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [usage, setUsage] = useState<UsageStats | null>(null);
   const [isCreatingKey, setIsCreatingKey] = useState(false);
@@ -122,7 +120,7 @@ export default function Dashboard() {
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Dashboard</h1>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            Welcome back, {session?.user?.name || session?.user?.email}
+            Manage your API keys, usage, and billing
           </p>
         </div>
 
@@ -315,7 +313,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-700">
                 <div>
                   <p className="font-medium text-gray-900 dark:text-gray-100">Current Plan</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{session?.user?.tier || 'Free'}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Free</p>
                 </div>
                 <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                   Upgrade Plan
