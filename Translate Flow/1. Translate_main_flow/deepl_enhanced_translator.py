@@ -30,6 +30,7 @@ CACHE_DIR = BASE_DIR / '.translation_cache'
 MAX_RETRIES = 3
 RETRY_DELAY = 2.0
 
+
 # Проверка доступности python-docx
 DOCX_AVAILABLE = False
 try:
